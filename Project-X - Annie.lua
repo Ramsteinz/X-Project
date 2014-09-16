@@ -1,4 +1,4 @@
-local version = "1.20"
+local version = "1.01"
 
 _G.UseUpdater = true
 
@@ -27,29 +27,30 @@ for DOWNLOAD_LIB_NAME, DOWNLOAD_LIB_URL in pairs(REQUIRED_LIBS) do
 end
 
 local UPDATE_NAME = "X-Project - Annie"
-local UPDATE_HOST = "raw.githubusercontent.com"
-local UPDATE_PATH ="/Ramsteinz/X-Project/master/Project-X%20-%20Annie.lua" .. "?rand=" .. math.random(1,10000)
-local UPDATE_FILE_PATH = SCRIPT_PATH..GetCurrentEnv().FILE_NAME
-local UPDATE_URL = "https://"..UPDATE_HOST..UPDATE_PATH
+local UPDATE_HOST = "raw.github.com"
+local UPDATE_PATH = "/Ramsteinz/X-Project/master/Project-X%20-%20Annie.lua" .. "?rand=" .. math.random(1, 10000)
+local UPDATE_FILE_PATH = SCRIPT_PATH..UPDATE_NAME..".lua"
+local UPDATE_URL = "http://"..UPDATE_HOST..UPDATE_PATH
 
 function AutoupdaterMsg(msg) print("<b><font color=\"#6699FF\">"..UPDATE_NAME..":</font></b> <font color=\"#FFFFFF\">"..msg..".</font>") end
-
-local ServerData = GetWebResult(UPDATE_HOST, UPDATE_PATH)
-if ServerData then
-  local ServerVersion = string.match(ServerData, "local version = \"%d+.%d+\"")
-  ServerVersion = string.match(ServerVersion and ServerVersion or "", "%d+.%d+")
-  if ServerVersion then
-    ServerVersion = tonumber(ServerVersion)
-    if tonumber(version) < ServerVersion then
-      AutoupdaterMsg("New version available "..ServerVersion)
-      AutoupdaterMsg("Updating, please don't press F9")
-      DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMSG("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end)
-    else
-      AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
+if _G.UseUpdater then
+  local ServerData = GetWebResult(UPDATE_HOST, UPDATE_PATH)
+  if ServerData then
+    local ServerVersion = string.match(ServerData, "local version = \"%d+.%d+\"")
+    ServerVersion = string.match(ServerVersion and ServerVersion or "", "%d+.%d+")
+    if ServerVersion then
+      ServerVersion = tonumber(ServerVersion)
+      if tonumber(version) < ServerVersion then
+        AutoupdaterMsg("New version available"..ServerVersion)
+        AutoupdaterMsg("Updating, please don't press F9")
+        DownloadFile(UPDATE_URL, UPDATE_FILE_PATH, function () AutoupdaterMsg("Successfully updated. ("..version.." => "..ServerVersion.."), press F9 twice to load the updated version.") end)  
+      else
+        AutoupdaterMsg("You have got the latest version ("..ServerVersion..")")
+      end
     end
+  else
+    AutoupdaterMsg("Error downloading version info")
   end
-else
-  AutoupdaterMsg("Error downloading version info")
 end
 
 
